@@ -100,3 +100,24 @@ def reset_to_seed():
     df.to_csv(data_path, index=False)
     
     return {"status": "reset", "inventory": seed_data}
+@router.post("/reset-quantities")
+def reset_quantities():
+    """Refill stock levels to seed values without wiping usage history."""
+    import json
+    data = load_data()
+    seed_file = os.path.join(os.path.dirname(__file__), "..", "data", "inventory_seed.json")
+    
+    with open(seed_file, "r") as f:
+        seed_data = json.load(f)
+    
+    seed_map = {item["id"]: item["quantity"] for item in seed_data}
+    
+    for item in data:
+        if item["id"] in seed_map:
+            item["quantity"] = seed_map[item["id"]]
+        else:
+            # For custom items, refill to a healthy level
+            item["quantity"] = item.get("reorder_threshold", 10.0) * 5
+            
+    save_data(data)
+    return {"status": "quantities_reset", "inventory": data}

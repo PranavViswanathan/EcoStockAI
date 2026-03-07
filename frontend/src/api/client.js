@@ -21,6 +21,9 @@ export const advanceDays = (days) =>
 export const resetToSeed = () =>
   apiClient.post('/devmode/reset').then(res => res.data);
 
+export const resetQuantities = () =>
+  apiClient.post('/devmode/reset-quantities').then(res => res.data);
+
 export const getDriftStatus = () => 
   apiClient.get('/drift/status').then(res => res.data);
 

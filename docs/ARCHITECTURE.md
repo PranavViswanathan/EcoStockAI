@@ -38,37 +38,39 @@ Browser → GET /items/{id}/prediction
   → response: { days_until_stockout, prediction_source, insight_message }
 ```
 
-### Autonomous Drift & Retraining Loop (scheduled)
-```
-Every hour:
-  Airflow (inference_dag)
-    → calls GET /items → GET /items/{id}/prediction for each item
-    → flags items below reorder_threshold
-    → logs run to MLflow experiment "inference_runs"
+### Automated Drift & Retraining Loop
 
-Every day:
-  Airflow (drift_detection_dag)
-    → loads last 7 days from usage_history.csv (current window)
-    → loads days 8–68 as reference window
-    → POST /drift-report to Evidently service
-        → Evidently runs DataDriftPreset report
-        → returns { dataset_drift, drift_share, drifted_features }
-    → if dataset_drift == true:
-        → trigger retraining_dag via Airflow REST API
+```mermaid
+sequenceDiagram
+    autonumber
+    participant AF as Airflow (DAGs)
+    participant DS as Data (CSV/JSON)
+    participant EV as Evidently Service
+    participant API as FastAPI Backend
+    participant ML as MLflow (Registry)
 
-On trigger:
-  Airflow (retraining_dag)
-    → runs backend/ml/train.py
-        → reads usage_history.csv
-        → engineers features (rolling avg, one-hot day, shelf_life)
-        → trains LinearRegression
-        → logs to MLflow, registers as new version
-    → loads current Production model RMSE from MLflow
-    → if new_rmse < production_rmse:
-        → promotes new version to Production
-        → archives old version
-    → else: keeps existing Production model
+    AF->>DS: Load Current (7d) vs Reference (30d)
+    AF->>EV: POST /drift-report
+    EV->>AF: { dataset_drift: true }
+    
+    Note over AF, API: Triggered only if drift detected
+    AF->>API: Trigger ml/train.py
+    API->>DS: Read Historical History
+    API->>ML: Log metrics & Register 'None' Version
+    
+    AF->>ML: Fetch Production vs Challenger RMSE
+    alt Challenger RMSE < Production RMSE
+        AF->>ML: Transition to 'Production'
+    else
+        AF->>ML: Maintain current Production model
+    end
 ```
+
+#### Detailed Logic
+1.  **Every hour**: `inference_dag` runs predictions for all items to identify stockout risks.
+2.  **Every day**: `drift_detection_dag` sends data to **Evidently AI**.
+3.  If drift is confirmed, `retraining_dag` runs.
+4.  **Challenger Gating**: A new model is ONLY promoted if it outperforms the current version.
 
 ---
 

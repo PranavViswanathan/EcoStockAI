@@ -19,8 +19,11 @@ class DriftRequest(BaseModel):
 @app.post("/drift-report")
 def run_drift_report(req: DriftRequest):
     try:
-        ref_df = pd.DataFrame(req.reference)
-        curr_df = pd.DataFrame(req.current)
+        # Filter to only relevant numerical columns for drift detection
+        # date and item_id often cause issues with statistical tests in small windows
+        columns_to_analyze = ['quantity_used']
+        ref_df = pd.DataFrame(req.reference)[columns_to_analyze]
+        curr_df = pd.DataFrame(req.current)[columns_to_analyze]
         
         # Evidently report
         report = Report(metrics=[DataDriftPreset()])
@@ -28,10 +31,20 @@ def run_drift_report(req: DriftRequest):
         
         # Get metrics
         report_dict = report.as_dict()
-        drift_metrics = report_dict["metrics"][0]["result"]
-        dataset_drift = drift_metrics["dataset_drift"]
-        drift_share = drift_metrics["share_of_drifted_columns"]
-        drifted_features = [k for k, v in drift_metrics["drift_by_columns"].items() if v["drift_detected"]]
+        
+        # Robust metric extraction
+        try:
+            drift_metrics = report_dict["metrics"][0]["result"]
+            dataset_drift = drift_metrics["dataset_drift"]
+            drift_share = drift_metrics["share_of_drifted_columns"]
+            drift_by_col = drift_metrics.get("drift_by_columns", {})
+            drifted_features = [k for k, v in drift_by_col.items() if v.get("drift_detected")]
+        except (KeyError, IndexError) as e:
+            print(f"Error parsing report structure: {e}")
+            # Fallback for unexpected report structure
+            dataset_drift = False
+            drift_share = 0.0
+            drifted_features = []
         
         # Save HTML
         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")

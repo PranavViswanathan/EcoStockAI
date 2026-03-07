@@ -1,0 +1,10 @@
+[
+  {
+    "days_until_stockout": 9.7,
+    "reorder_recommended": true,
+    "prediction_source": "ml_model",
+    "confidence": "high",
+    "item_id": "item_005",
+    "insight_message": "Your sourdough bread supply will run out in 9 days. Want to see local, fair-trade suppliers?"
+  }
+]

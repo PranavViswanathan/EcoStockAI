@@ -122,24 +122,36 @@ cd green-tech-inventory
 
 ## Architecture Overview
 
-```
-┌─────────────┐     REST API     ┌──────────────────┐
-│  React UI   │ ◄──────────────► │  FastAPI Backend  │
-│  (Vite)     │                  │  (Python 3.10)    │
-└─────────────┘                  └────────┬─────────┘
-                                          │
-                    ┌─────────────────────┼──────────────────────┐
-                    │                     │                      │
-              ┌─────▼──────┐    ┌─────────▼──────┐   ┌──────────▼──────┐
-              │  MLflow    │    │  PostgreSQL    │   │  Evidently AI  │
-              │ (Model Reg)│    │  (Metadata DB) │   │ (Drift Service) │
-              └────────────┘    └────────────────┘   └─────────────────┘
-                    ▲
-              ┌─────┴──────────────────────────────────┐
-              │           Apache Airflow                │
-              │  inference_dag → drift_detection_dag    │
-              │                → retraining_dag         │
-              └────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Client_Layer [Client Layer]
+        UI[React Frontend / Vite]
+    end
+
+    subgraph Service_Layer [Service Layer]
+        API[FastAPI Backend]
+        EV[Evidently AI / Drift service]
+    end
+
+    subgraph Storage_Layer [Storage & Metadata]
+        DB[(PostgreSQL)]
+        REG[MLflow Model Registry]
+        DS[(File System / CSV / JSON)]
+    end
+
+    subgraph Pipeline_Layer [Orchestration]
+        AF[Apache Airflow]
+    end
+
+    UI <-->|REST API| API
+    API <-->|SQL| DB
+    API <-->|Tracking| REG
+    API <-->|I/O| DS
+    
+    AF -->|Trigger Tasks| API
+    AF -->|Audit| REG
+    AF -->|Detect Drift| EV
+    EV <-->|Read Data| DS
 ```
 
 See the detailed docs below for each layer.

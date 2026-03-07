@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { FastForward, RotateCcw } from 'lucide-react';
-import { advanceDays, resetToSeed } from '../api/client';
+import { FastForward, RotateCcw, RefreshCcw } from 'lucide-react';
+import { advanceDays, resetToSeed, resetQuantities } from '../api/client';
 
 export default function DevModePanel({ onAdvanced }) {
     const [days, setDays] = useState(7);
     const [loading, setLoading] = useState(false);
     const [resetting, setResetting] = useState(false);
+    const [refilling, setRefilling] = useState(false);
 
     const handleSimulate = async () => {
         setLoading(true);
@@ -17,6 +18,19 @@ export default function DevModePanel({ onAdvanced }) {
             alert('Failed to simulate time jump.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleResetQuantities = async () => {
+        setRefilling(true);
+        try {
+            await resetQuantities();
+            onAdvanced();
+        } catch (e) {
+            console.error(e);
+            alert('Failed to refill quantities.');
+        } finally {
+            setRefilling(false);
         }
     };
 
@@ -60,7 +74,7 @@ export default function DevModePanel({ onAdvanced }) {
                 <button
                     className="btn btn-primary"
                     onClick={handleSimulate}
-                    disabled={loading || resetting}
+                    disabled={loading || resetting || refilling}
                     style={{ width: '100%', justifyContent: 'center' }}
                 >
                     {loading ? 'Simulating...' : '⏩ Advance Time'}
@@ -68,12 +82,22 @@ export default function DevModePanel({ onAdvanced }) {
 
                 <button
                     className="btn btn-secondary"
-                    onClick={handleReset}
-                    disabled={loading || resetting}
+                    onClick={handleResetQuantities}
+                    disabled={loading || resetting || refilling}
                     style={{ width: '100%', justifyContent: 'center', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
+                    <RefreshCcw size={16} />
+                    {refilling ? 'Refilling...' : 'Reset Quantities (Refill)'}
+                </button>
+
+                <button
+                    className="btn btn-secondary"
+                    onClick={handleReset}
+                    disabled={loading || resetting || refilling}
+                    style={{ width: '100%', justifyContent: 'center', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.7 }}
+                >
                     <RotateCcw size={16} />
-                    {resetting ? 'Resetting...' : 'Reset to Initial State'}
+                    {resetting ? 'Resetting...' : 'Full System Reset'}
                 </button>
             </div>
         </div>
