@@ -1,3 +1,51 @@
+## Submission Details
+
+**Candidate Name:** Pranav Viswanathan
+
+**Scenario Chosen:** Green-Tech Inventory Assistant — AI-powered inventory management with ML stockout prediction, drift detection, and autonomous retraining.
+
+**Estimated Time Spent:** 5.5 hours
+
+---
+
+## Quick Start
+
+**Prerequisites:**
+- Docker Desktop with Compose v2 installed and running
+- 4GB+ RAM allocated to Docker
+- Git
+
+**Run Commands:**
+```bash
+git clone <repo-url>
+cd green-tech-inventory
+cp .env.example .env          # add your OPENAI_API_KEY if desired
+./start.sh init               # starts all services, seeds data, trains model, activates DAGs
+```
+
+**Test Commands:**
+```bash
+docker compose exec backend pytest tests/ -v
+```
+
+---
+
+## AI Disclosure
+
+- **Did you use an AI assistant (Copilot, ChatGPT, etc.)?** Yes — used an AI coding assistant for scaffolding boilerplate (Dockerfiles, route handlers, React components).
+- **How did you verify the suggestions?** All generated code was reviewed line-by-line, run inside Docker, and validated via the pytest suite and manual browser testing against the live UI. The ML pipeline was verified by checking MLflow experiment metrics (RMSE, MAE, R2) and confirming the prediction source badge switched from rule-based to AI model after training.
+- **Give one example of a suggestion you rejected or changed:** The AI initially suggested using MLflow's deprecated `stages` API for model promotion. I updated this to use `get_latest_versions()` with an explicit stage check and added a RMSE comparison gate so the system only promotes a challenger model if it genuinely outperforms the current production model — not just blindly on every retrain.
+
+---
+
+## Tradeoffs and Prioritization
+
+- **What did you cut to stay within the 4-6 hour limit?** Real-time WebSocket updates (the dashboard requires a manual refresh to show new predictions), a proper authentication layer for the API, and a more sophisticated time-series model (ARIMA or Prophet) in favour of the faster-to-implement LinearRegression baseline.
+- **What would you build next if you had more time?** Automated IoT sensor integration for real-time quantity updates, a multi-tenant auth layer, email/Slack notifications when items hit the reorder threshold, and a more interpretable model (XGBoost with SHAP explanations surfaced in the UI).
+- **Known limitations:** The LinearRegression model is a strong baseline but does not capture non-linear demand patterns or external shocks (holidays, supply disruptions). The Airflow DAGs run inside Docker on localhost and would need a proper cloud deployment (MWAA, Cloud Composer) for production scale. Usage history is synthetic — a production version would ingest real POS or sensor data.
+
+---
+
 #  EcoStock AI — Intelligent Inventory Assistant
 
 > An end-to-end machine learning system that tracks inventory, predicts stockouts, detects behavioral drift, and autonomously retrains its own models.
