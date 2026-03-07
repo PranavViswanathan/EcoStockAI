@@ -1,0 +1,90 @@
+[
+    {
+        "id": "item_001",
+        "name": "Oat Milk (1L)",
+        "category": "Perishable",
+        "quantity": 120.0,
+        "unit": "cartons",
+        "avg_daily_usage": 3.2,
+        "shelf_life_days": 14,
+        "reorder_threshold": 20.0,
+        "last_updated": "2026-03-07"
+    },
+    {
+        "id": "item_002",
+        "name": "Coffee Beans",
+        "category": "Non-Perishable",
+        "quantity": 80.0,
+        "unit": "kg",
+        "avg_daily_usage": 1.8,
+        "shelf_life_days": 180,
+        "reorder_threshold": 10.0,
+        "last_updated": "2026-03-07"
+    },
+    {
+        "id": "item_003",
+        "name": "Cheddar Cheese",
+        "category": "Perishable",
+        "quantity": 45.0,
+        "unit": "kg",
+        "avg_daily_usage": 2.5,
+        "shelf_life_days": 21,
+        "reorder_threshold": 8.0,
+        "last_updated": "2026-03-07"
+    },
+    {
+        "id": "item_004",
+        "name": "Almond Butter",
+        "category": "Non-Perishable",
+        "quantity": 60.0,
+        "unit": "jars",
+        "avg_daily_usage": 1.2,
+        "shelf_life_days": 365,
+        "reorder_threshold": 6.0,
+        "last_updated": "2026-03-07"
+    },
+    {
+        "id": "item_005",
+        "name": "Sourdough Bread",
+        "category": "Perishable",
+        "quantity": 30.0,
+        "unit": "loaves",
+        "avg_daily_usage": 4.0,
+        "shelf_life_days": 5,
+        "reorder_threshold": 10.0,
+        "last_updated": "2026-03-07"
+    },
+    {
+        "id": "item_006",
+        "name": "Kombucha (500ml)",
+        "category": "Perishable",
+        "quantity": 96.0,
+        "unit": "bottles",
+        "avg_daily_usage": 2.8,
+        "shelf_life_days": 30,
+        "reorder_threshold": 12.0,
+        "last_updated": "2026-03-07"
+    },
+    {
+        "id": "item_007",
+        "name": "Brown Rice",
+        "category": "Non-Perishable",
+        "quantity": 150.0,
+        "unit": "kg",
+        "avg_daily_usage": 3.5,
+        "shelf_life_days": 730,
+        "reorder_threshold": 20.0,
+        "last_updated": "2026-03-07"
+    },
+    {
+        "id": "item_008",
+        "name": "Greek Yogurt",
+        "category": "Perishable",
+        "quantity": 72.0,
+        "unit": "cups",
+        "avg_daily_usage": 5.0,
+        "shelf_life_days": 14,
+        "reorder_threshold": 15.0,
+        "last_updated": "2026-03-07"
+    }
+]

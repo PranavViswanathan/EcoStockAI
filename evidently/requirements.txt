@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+evidently==0.4.37
+pandas
+mlflow==2.11.1
