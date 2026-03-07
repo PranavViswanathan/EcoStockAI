@@ -1,4 +1,4 @@
-# 🧪 Testing
+# Testing
 
 [← Back to README](../README.md)
 
