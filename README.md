@@ -155,6 +155,7 @@ See the detailed docs below for each layer.
 | [️ Airflow DAGs](docs/AIRFLOW.md) | DAG descriptions, schedules, trigger conditions |
 | [ API Reference](docs/API.md) | All backend endpoints with request/response examples |
 | [️ Developer Mode](docs/DEVELOPER_MODE.md) | Time simulation, reset, shell scripts |
+| [🧪 Testing](docs/TESTING.md) | Pytest suite, test coverage, and how to run tests |
 
 ---
 
