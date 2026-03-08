@@ -6,6 +6,8 @@
 
 **Estimated Time Spent:** 5.5 hours
 
+**Video Walkthough:** https://youtu.be/y_g3FXVzKWQ
+
 ---
 
 ## Quick Start
