@@ -1,15 +1,3 @@
-## Submission Details
-
-**Candidate Name:** Pranav Viswanathan
-
-**Scenario Chosen:** Green-Tech Inventory Assistant — AI-powered inventory management with ML stockout prediction, drift detection, and autonomous retraining.
-
-**Estimated Time Spent:** 5.5 hours
-
-**Video Walkthough:** https://youtu.be/y_g3FXVzKWQ
-
----
-
 ## Quick Start
 
 **Prerequisites:**
